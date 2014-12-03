@@ -77,13 +77,25 @@ operators = ['<>', '>', '|', '&', '!']
 
 # check if user input has errors
 def hasErrors(expression):
+    for i in range(1, len(expression) - 1):
+        prev = expression[i - 1]
+        curr = expression[i]
+        next = expression[i + 1]
+
+        if curr == '!':
+            if prev not in operators and prev != '(' and prev != ')':
+                if next not in operators and next != '(' and next != ')':
+                    return 'invalid use of !'
+
     for i in range(0, len(expression) - 1):
         currOp = expression[i]
         nextOp = expression[i + 1]
+        nextNextOp = None
+
         if currOp in operators:
             if nextOp in operators:
                 return "consecutive operators"
-            
+                    
         if currOp not in operators and currOp != '(' and currOp != ')':
             if nextOp not in operators and nextOp != '(' and nextOp != ')':
                 return "consecutive operands"
