@@ -236,7 +236,6 @@ def main():
                 a = []
                 getExpression(i, a)
                 b = evaluator.evaluate(i)
-                # a.reverse()   
                 exp.append(' '.join(a))
                 result.append(b)
 
