@@ -7,10 +7,21 @@ class Node:
         self.right = None
         self.value = value
 
-# Helper class to evaluate most basic proposition
-class LogicEvaluator:
-    @staticmethod
-    def evaluate(op, a, b):
+# Evaluate a given proposition in tree form 
+class TreeEvaluator:
+    def __init__(self):
+        self.valueTable = None
+        self.operands = None
+        self.resultTable = {}
+
+    # valueTable is a list of tuples in the form (T, T, F, ..., n)
+    # each tuple holds a permutation of T,T,F,...,n
+    # operands is a list of operands i.e. p, q, r, etc
+    def setInitialValues(self, operands, valueTable):
+        self.operands = operands
+        self.valueTable = valueTable
+
+    def evaluatePreposition(self, op, a, b):
         if op == '!':
             if a == None and b != None:
                 return not b
@@ -26,21 +37,7 @@ class LogicEvaluator:
             return a == b
         else:
             return None
-
-# Evaluate a given proposition in tree form 
-class TreeEvaluator:
-    def __init__(self):
-        self.valueTable = None
-        self.operands = None
-        self.resultTable = {}
-
-    # valueTable is a list of tuples in the form (T, T, F, ..., n)
-    # each tuple holds a permutation of T,T,F,...,n
-    # operands is a list of operands i.e. p, q, r, etc
-    def setInitialValues(self, operands, valueTable):
-        self.operands = operands
-        self.valueTable = valueTable
-
+        
     # evaluate the tree for each given list of truth values
     def evaluate(self, tree):
         result = []
@@ -60,18 +57,16 @@ class TreeEvaluator:
     def evaluateHelper(self, tree, valuepair):
         if tree.value in self.operands:
             return valuepair[tree.value]
-    
+
         a = None
         if tree.left != None:
             a = self.evaluateHelper(tree.left, valuepair)
-
-        b = None
-        if tree.right != None:
-            b = self.evaluateHelper(tree.right, valuepair)
+            
+        b = self.evaluateHelper(tree.right, valuepair)
             
         op = tree.value
         
-        return LogicEvaluator.evaluate(op, a, b)
+        return self.evaluatePreposition(op, a, b)
 
 operators = ['<>', '>', '|', '&', '!']
 
