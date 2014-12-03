@@ -8,7 +8,7 @@ class Node:
         self.value = value
 
 # Helper class to evaluate most basic proposition
-class LogicOperators:
+class LogicEvaluator:
     @staticmethod
     def evaluate(op, a, b):
         if op == '!':
@@ -71,7 +71,7 @@ class TreeEvaluator:
             
         op = tree.value
         
-        return LogicOperators.evaluate(op, a, b)
+        return LogicEvaluator.evaluate(op, a, b)
 
 operators = ['<>', '>', '|', '&', '!']
 
