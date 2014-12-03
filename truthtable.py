@@ -30,7 +30,6 @@ class LogicOperators:
 # Evaluate a given proposition in tree form 
 class TreeEvaluator:
     def __init__(self):
-        self.operators = ['<>', '>', '|', '&', '!']
         self.valueTable = None
         self.operands = None
         self.resultTable = {}
