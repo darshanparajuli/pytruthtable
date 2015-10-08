@@ -1,0 +1,36 @@
+Program output for some proposition:
+
+*******************************************************************************************
+*Operators u can use:                                                                     *
+* !  -> not, please use parenthesis, i.e ( ! p )                                          *
+* &  -> and                                                                               *
+* |  -> or                                                                                *
+* >  -> implication                                                                       *
+* <> -> bidirectional implication                                                         *
+*   ***Please put a space between operators and operands***                               *
+*   ***Don't do this -> (p&q) <- the whole thing will be treated as single operand!***    *
+*Proper input example: ( p & q ) | ( ! r )                                                *
+*******************************************************************************************
+
+Enter a propositional sentence (type 'quit' to quit): ( p & q ))
+Error: consecutive operands
+Enter a propositional sentence (type 'quit' to quit): p | q
+p         q         p | q     
+True      True      True      
+True      False     True      
+False     True      True      
+False     False     False     
+Enter a propositional sentence (type 'quit' to quit): p > q
+p         q         p > q     
+True      True      True      
+True      False     False     
+False     True      True      
+False     False     True      
+Enter a propositional sentence (type 'quit' to quit): ( p & q ) <> q
+p         q         p & q     p & q <> q     
+True      True      True      True           
+True      False     False     True           
+False     True      False     False          
+False     False     False     True           
+Enter a propositional sentence (type 'quit' to quit): quit
+Bye!
