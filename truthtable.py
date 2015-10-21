@@ -1,9 +1,8 @@
-# Written by Darshan Parajuli, 12/02/2014
-
 import itertools
+import collections
 
 # valid operators
-operators = ['<>', '>', '|', '&', '!']
+OPERATORS = ['<>', '>', '|', '&', '!']
 
 # Binary Tree node
 class Node:
@@ -15,16 +14,15 @@ class Node:
 # Evaluate a given proposition in tree form
 class TreeEvaluator:
     def __init__(self):
-        self.valueTable = None
+        self.value_table = None
         self.operands = None
-        self.resultTable = {}
 
-    # valueTable is a list of tuples in the form (T, T, F, ..., n)
+    # value_table is a list of tuples in the form (T, T, F, ..., n)
     # each tuple holds a permutation of T,T,F,...,n
     # operands is a list of operands i.e. p, q, r, etc
-    def setInitialValues(self, operands, valueTable):
+    def setInitialValues(self, operands, value_table):
         self.operands = operands
-        self.valueTable = valueTable
+        self.value_table = value_table
 
     def evaluatePreposition(self, op, a, b):
         if op == '!':
@@ -46,7 +44,7 @@ class TreeEvaluator:
     # evaluate the tree for each given list of truth values
     def evaluate(self, tree):
         result = []
-        for v in self.valueTable:
+        for v in self.value_table:
             value = dict()
             for i in range(0, len(self.operands)):
                 value[self.operands[i]] = v[i]
@@ -75,8 +73,8 @@ def hasErrors(expression):
         next = expression[i + 1]
 
         if curr == '!':
-            if prev not in operators and prev != '(' and prev != ')':
-                if next not in operators and next != '(' and next != ')':
+            if prev not in OPERATORS and prev != '(' and prev != ')':
+                if next not in OPERATORS and next != '(' and next != ')':
                     return 'invalid use of !'
 
     for i in range(0, len(expression) - 1):
@@ -84,15 +82,14 @@ def hasErrors(expression):
         nextOp = expression[i + 1]
         nextNextOp = None
 
-        if currOp in operators:
-            if nextOp in operators:
+        if currOp in OPERATORS:
+            if nextOp in OPERATORS:
                 return "consecutive operators"
 
-        if currOp not in operators and currOp != '(' and currOp != ')':
-            if nextOp not in operators and nextOp != '(' and nextOp != ')':
+        if currOp not in OPERATORS and currOp != '(' and currOp != ')':
+            if nextOp not in OPERATORS and nextOp != '(' and nextOp != ')':
                 return "consecutive operands"
 
-    import collections
     counter = collections.Counter(expression)
 
     if '(' in expression or ')' in expression:
@@ -111,7 +108,7 @@ def convertToPostFix(expression):
     order = ['(', '<>', '>', '|', '&', '!']
 
     for i in expression:
-        if i not in operators and i != '(' and i != ')':
+        if i not in OPERATORS and i != '(' and i != ')':
             postFix.append(i)
         elif i == '(':
             stack.append(i)
@@ -136,7 +133,7 @@ def convertPostFixToTree(postFix):
     trees = []
 
     for i in postFix:
-        if i not in operators:
+        if i not in OPERATORS:
             stack.append(Node(i))
         else:
             a = stack.pop()
@@ -193,12 +190,43 @@ def displayResult(operands, table, exp, result):
         for j in range(0, len(result[i])):
             output[j + 1] += str(int(result[i][j])).ljust(lengths[i + templen])
 
-    for i in output:
-        print(i)
 
+    print("Writing solution to solution.txt...", end = ' ')
+    f = None
+    try:
+        f = open('solution.txt', 'w')
+        for i in output:
+            f.write('{}\n'.format(i))
+    except Exception as e:
+        print(str(e))
+    finally:
+        if f != None:
+            f.close()
+    print("done!")
 
-def run(userInput, evaluator):
-    expression = list(userInput.split())
+def tokenize_input(user_input) -> list:
+    user_input = user_input.strip().replace(' ', '')
+    result = []
+    size = len(user_input)
+    i = 0
+    while i < size:
+        if i < size - 1:
+            op = user_input[i:i+2]
+            if op in OPERATORS:
+                result.append(op)
+                i = i + 1
+            else:
+                result.append(user_input[i])
+        else:
+            result.append(user_input[i])
+
+        i = i + 1
+
+    return result
+    
+        
+def run(user_input, evaluator):
+    expression = tokenize_input(user_input)
     error = hasErrors(expression)
 
     if error != False:
@@ -212,7 +240,7 @@ def run(userInput, evaluator):
         trees = convertPostFixToTree(postFix)
         # print('converted to postfix tree')
 
-        operands = [i for i in postFix if i not in operators]
+        operands = [i for i in postFix if i not in OPERATORS]
         operands = list(set(operands))
         operands.sort()
 
@@ -222,11 +250,11 @@ def run(userInput, evaluator):
 
         exp = []
         result = []
-        for i in trees:
+        for tree in trees:
             a = []
-            getExpression(i, a)
+            getExpression(tree, a)
             # print('expression: {}'.format(a))
-            b = evaluator.evaluate(i)
+            b = evaluator.evaluate(tree)
             # print('evaluation complete')
             exp.append(' '.join(a))
             result.append(b)
@@ -250,15 +278,16 @@ def main():
     print("*Proper input example: ( p & q ) | ( ! r )                                                *")
     print("*******************************************************************************************\n")
 
-    inputPrompt = "Enter a propositional sentence (enter 'exit' to quit): "
-
-    userInput = input(inputPrompt)
+    input_prompt = "Enter a propositional sentence (enter 'exit' to quit): "
 
     evaluator = TreeEvaluator()
 
-    while userInput != "exit":
-        run(userInput, evaluator)
-        userInput = input(inputPrompt)
+    while True:
+        user_input = input(input_prompt)
+        if user_input == 'exit':
+            break
+        else:
+            run(user_input, evaluator)
 
     print("Bye!")
 
