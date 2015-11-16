@@ -90,6 +90,9 @@ def hasErrors(expression):
             if nextOp not in OPERATORS and nextOp != '(' and nextOp != ')':
                 return "consecutive operands"
 
+    if expression[-1] in OPERATORS:
+        return 'invalid operator position'
+
     counter = collections.Counter(expression)
 
     if '(' in expression or ')' in expression:
@@ -178,6 +181,7 @@ def displayResult(operands, table, exp, result):
         temp += exp[i].ljust(lengths[i])
     output.append(temp)
 
+
     for i in table:
         temp = ""
         for j in range(0, len(i)):
@@ -194,9 +198,14 @@ def displayResult(operands, table, exp, result):
     print("Writing solution to solution.txt...", end = ' ')
     f = None
     try:
-        f = open('solution.txt', 'w')
+        f = open('solution.txt', 'a')
         for i in output:
             f.write('{}\n'.format(i))
+        for i in output:
+            f.write('{}'.format(len(i) * '#'))
+            break
+
+        f.write('\n\n')
     except Exception as e:
         print(str(e))
     finally:
@@ -223,8 +232,8 @@ def tokenize_input(user_input) -> list:
         i = i + 1
 
     return result
-    
-        
+
+
 def run(user_input, evaluator):
     expression = tokenize_input(user_input)
     error = hasErrors(expression)
@@ -273,9 +282,7 @@ def main():
     print("* |  -> or                                                                                *")
     print("* >  -> implication                                                                       *")
     print("* <> -> bidirectional implication                                                         *")
-    print("*   ***Please put a space between operators and operands***                               *")
-    print("*   ***Don't do this -> (p&q) <- the whole thing will be treated as single operand!***    *")
-    print("*Proper input example: ( p & q ) | ( ! r )                                                *")
+    print("*Proper input example: (p & q) | (!r)                                                *")
     print("*******************************************************************************************\n")
 
     input_prompt = "Enter a propositional sentence (enter 'exit' to quit): "
