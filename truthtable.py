@@ -195,23 +195,25 @@ def displayResult(operands, table, exp, result):
             output[j + 1] += str(int(result[i][j])).ljust(lengths[i + templen])
 
 
-    print("Writing solution to solution.txt...", end = ' ')
-    f = None
-    try:
-        f = open('solution.txt', 'a')
-        for i in output:
-            f.write('{}\n'.format(i))
-        for i in output:
-            f.write('{}'.format(len(i) * '#'))
-            break
-
-        f.write('\n\n')
-    except Exception as e:
-        print(str(e))
-    finally:
-        if f != None:
-            f.close()
-    print("done!")
+    for i in output:
+        print(i)
+    # print("Writing solution to solution.txt...", end = ' ')
+    # f = None
+    # try:
+    #     f = open('solution.txt', 'a')
+    #     for i in output:
+    #         f.write('{}\n'.format(i))
+    #     for i in output:
+    #         f.write('{}'.format(len(i) * '#'))
+    #         break
+    #
+    #     f.write('\n\n')
+    # except Exception as e:
+    #     print(str(e))
+    # finally:
+    #     if f != None:
+    #         f.close()
+    # print("done!")
 
 def tokenize_input(user_input) -> list:
     user_input = user_input.strip().replace(' ', '')
@@ -290,11 +292,12 @@ def main():
     evaluator = TreeEvaluator()
 
     while True:
-        user_input = input(input_prompt)
+        user_input = input(input_prompt).strip()
         if user_input == 'exit':
             break
         else:
-            run(user_input, evaluator)
+            if len(user_input) > 0:
+                run(user_input, evaluator)
 
     print("Bye!")
 
